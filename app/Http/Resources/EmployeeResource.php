@@ -17,6 +17,8 @@ class EmployeeResource extends JsonResource
             'phone'         => $this->phone,
             'address'       => $this->address,
             'department'    => new DepartmentResource($this->whenLoaded('department')),
+            'created_at'    => $this->created_at,
+            'updated_at'    => $this->updated_at,
         ];
     }
 }

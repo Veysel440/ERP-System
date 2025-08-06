@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\RoleController;
 use App\Http\Controllers\Api\Department\DepartmentController;
@@ -12,16 +13,16 @@ use App\Http\Controllers\Api\Task\TaskController;
 use App\Http\Controllers\Api\User\UserController;
 
 Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login',    [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:30,1'])->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('products', ProductController::class);
-    Route::apiResource('department', DepartmentController::class);
+    Route::apiResource('departments', DepartmentController::class);
     Route::apiResource('finance-transactions', FinanceTransactionController::class);
     Route::apiResource('employees', EmployeeController::class);
     Route::apiResource('suppliers', SupplierController::class);

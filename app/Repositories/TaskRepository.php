@@ -6,9 +6,24 @@ use App\Models\Task;
 
 class TaskRepository
 {
-    public function all(int $paginate = 15)
+    public function filtered(array $filters = [], int $paginate = 15)
     {
-        return Task::with(['project', 'assignedUser'])->paginate($paginate);
+        $query = Task::with(['project', 'assignedUser']);
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+        if (!empty($filters['assigned_to'])) {
+            $query->where('assigned_to', $filters['assigned_to']);
+        }
+        if (!empty($filters['project_id'])) {
+            $query->where('project_id', $filters['project_id']);
+        }
+        if (!empty($filters['from_date']) && !empty($filters['to_date'])) {
+            $query->whereBetween('created_at', [$filters['from_date'], $filters['to_date']]);
+        }
+
+        return $query->paginate($paginate);
     }
 
     public function find(int $id): Task
