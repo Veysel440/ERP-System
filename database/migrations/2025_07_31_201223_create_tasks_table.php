@@ -17,10 +17,12 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_to')->nullable();
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('erp_projects')->onDelete('cascade');
+            // Doğru foreign key tanımları:
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreign('assigned_to')->references('id')->on('users')->onDelete('set null');
         });
     }
+
 
     public function down(): void
     {
